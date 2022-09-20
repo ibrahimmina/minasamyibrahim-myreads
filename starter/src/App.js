@@ -1,17 +1,73 @@
 import "./App.css";
-import { useState } from "react";
+import { useState , useEffect} from "react";
+import ListBooks from "./components/ListBooks";
+import * as BooksAPI from "./BooksAPI";
+import { Route, Routes, useNavigate } from "react-router-dom";
+
 
 function App() {
+    let navigate = useNavigate();
+
   const [showSearchPage, setShowSearchpage] = useState(false);
 
+  const [books, setBooks]= useState([]);
+
+  const updateShelf = (book,shelf) => {
+    const updateShelfAPI = async () => {
+      BooksAPI.update(book,shelf);
+      const res = await BooksAPI.getAll();
+      setBooks(res);
+    };
+    updateShelfAPI();
+  }
+
+  useEffect(() => {
+    const getBooks = async () => {
+      const res = await BooksAPI.getAll();
+      setBooks(res);
+    };
+    getBooks();
+  }, [])
+
+
+  const [query, setQuery] = useState("");
+
+  const updateQuery = (query) => {
+    setQuery(query.trim());
+  }
+
+  const clearQuery = () => {
+      setShowSearchpage(!showSearchPage);
+      updateQuery("");
+  }
+
+  let showingBooks = "";
+  if (query === ""){
+    showingBooks = books;
+  } else {
+    
+    let filter1 = books.filter((c) => c.title.toLowerCase().includes(query.toLowerCase()));
+    //console.log(filter1);
+    let filter2 = books.filter((c) => c.authors.toString().toLowerCase().includes(query.toLowerCase()));
+    //console.log(filter2);
+    let filter3 = books.filter((c) => c.industryIdentifiers.every(a => a.identifier.includes(query)));
+    //console.log(filter3);
+    let concat = [].concat(filter1,filter2,filter3);
+    let ids = concat.map(o => o.id)
+    let filtered = concat.filter(({id}, index) => !ids.includes(id, index+1))
+    showingBooks = filtered;
+  }
+
+
   return (
+    
     <div className="app">
       {showSearchPage ? (
         <div className="search-books">
           <div className="search-books-bar">
             <a
               className="close-search"
-              onClick={() => setShowSearchpage(!showSearchPage)}
+              onClick={clearQuery}
             >
               Close
             </a>
@@ -19,12 +75,14 @@ function App() {
               <input
                 type="text"
                 placeholder="Search by title, author, or ISBN"
+                value={query} onChange={(event) => updateQuery(event.target.value)}
               />
             </div>
           </div>
           <div className="search-books-results">
-            <ol className="books-grid"></ol>
-          </div>
+            <ListBooks books={showingBooks} onUpdateShelf={updateShelf}/>
+{/*             <ol className="books-grid"></ol>
+ */}          </div>
         </div>
       ) : (
         <div className="list-books">
@@ -36,7 +94,9 @@ function App() {
               <div className="bookshelf">
                 <h2 className="bookshelf-title">Currently Reading</h2>
                 <div className="bookshelf-books">
-                  <ol className="books-grid">
+                    <ListBooks books={books.filter((bk) => bk.shelf === "currentlyReading")} onUpdateShelf={updateShelf}/>
+
+{/*                   <ol className="books-grid">
                     <li>
                       <div className="book">
                         <div className="book-top">
@@ -97,13 +157,15 @@ function App() {
                         <div className="book-authors">Orson Scott Card</div>
                       </div>
                     </li>
-                  </ol>
+                  </ol> */}
                 </div>
               </div>
               <div className="bookshelf">
                 <h2 className="bookshelf-title">Want to Read</h2>
                 <div className="bookshelf-books">
-                  <ol className="books-grid">
+                  <ListBooks books={books.filter((bk) => bk.shelf === "wantToRead")} onUpdateShelf={updateShelf}/>
+
+{/*                   <ol className="books-grid">
                     <li>
                       <div className="book">
                         <div className="book-top">
@@ -166,13 +228,15 @@ function App() {
                         <div className="book-authors">J.K. Rowling</div>
                       </div>
                     </li>
-                  </ol>
+                  </ol> */}
                 </div>
               </div>
               <div className="bookshelf">
                 <h2 className="bookshelf-title">Read</h2>
                 <div className="bookshelf-books">
-                  <ol className="books-grid">
+                  <ListBooks books={books.filter((bk) => bk.shelf === "read")} onUpdateShelf={updateShelf}/>
+
+{/*                   <ol className="books-grid">
                     <li>
                       <div className="book">
                         <div className="book-top">
@@ -268,7 +332,7 @@ function App() {
                       </div>
                     </li>
                   </ol>
-                </div>
+ */}                </div>
               </div>
             </div>
           </div>

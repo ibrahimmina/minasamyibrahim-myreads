@@ -130,63 +130,6 @@ function App() {
     }/>  
     </Routes>
     
-/*     <div className="app">
-      {showSearchPage ? (
-        <div className="search-books">
-          <div className="search-books-bar">
-            <a
-              className="close-search"
-              onClick={clearQuery}
-            >
-              Close
-            </a>
-            <div className="search-books-input-wrapper">
-              <input
-                type="text"
-                placeholder="Search by title, author, or ISBN"
-                value={query} onChange={(event) => updateQuery(event.target.value)}
-              />
-            </div>
-          </div>
-          <div className="search-books-results">
-            <ListBooks books={showingBooks} onUpdateShelf={updateShelf}/>
-         </div>
-        </div>
-      ) : (
-        <div className="list-books">
-          <div className="list-books-title">
-            <h1>MyReads</h1>
-          </div>
-          <div className="list-books-content">
-            <div>
-              <div className="bookshelf">
-                <h2 className="bookshelf-title">Currently Reading</h2>
-                <div className="bookshelf-books">
-                    <ListBooks books={books.filter((bk) => bk.shelf === "currentlyReading")} onUpdateShelf={updateShelf}/>
-
-
-                </div>
-              </div>
-              <div className="bookshelf">
-                <h2 className="bookshelf-title">Want to Read</h2>
-                <div className="bookshelf-books">
-                  <ListBooks books={books.filter((bk) => bk.shelf === "wantToRead")} onUpdateShelf={updateShelf}/>
-                </div>
-              </div>
-              <div className="bookshelf">
-                <h2 className="bookshelf-title">Read</h2>
-                <div className="bookshelf-books">
-                  <ListBooks books={books.filter((bk) => bk.shelf === "read")} onUpdateShelf={updateShelf}/>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="open-search">
-            <a onClick={() => setShowSearchpage(!showSearchPage)}>Add a book</a>
-          </div>
-        </div>
-      )}
-    </div> */
   );
 }
 

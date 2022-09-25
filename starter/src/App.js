@@ -52,15 +52,26 @@ function App() {
     const searchBooksAPI = async () => {
       var emptybooks = [];
       const res = await BooksAPI.search(query);
-      console.log(res);
-      console.log(emptybooks);
+      //console.log(res);
+      //console.log(emptybooks);
+      let searchBookList = [];
+      //res.forEach((item) => console.log(item.id));
+
+      if (!res.hasOwnProperty("error")) {
+        res.forEach((item) => {
+          const item2 = books.find((i2) => i2.id === item.id);
+          item2 ? (item.shelf = item2.shelf) : (item.shelf = "none");
+          searchBookList.push(item);
+        });
+      }
+
       !res.hasOwnProperty("error")
-        ? setShowingBooks(res)
+        ? setShowingBooks(searchBookList)
         : setShowingBooks(emptybooks);
     };
     searchBooksAPI();
   };
-
+  // eslint-disable-next-line
   const [query, setQuery] = useState("");
 
   const updateQuery = (query) => {
@@ -168,7 +179,7 @@ function App() {
                   <input
                     type="text"
                     placeholder="Search by title, author, or ISBN"
-                    value={query}
+                    //value={query}
                     onChange={(event) => updateQuery(event.target.value)}
                   />
                 </div>

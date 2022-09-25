@@ -10,8 +10,10 @@ const ListBooks = ({ books, onUpdateShelf }) => {
                 width: 128,
                 height: 193,
                 backgroundImage: `url(${
-                  book.hasOwnProperty("imageLinks.smallThumbnail")
-                    ? book.imageLinks.smallThumbnail
+                  book.hasOwnProperty("imageLinks")
+                    ? book.imageLinks.hasOwnProperty("smallThumbnail")
+                      ? book.imageLinks.smallThumbnail
+                      : ""
                     : ""
                 })`,
               }}

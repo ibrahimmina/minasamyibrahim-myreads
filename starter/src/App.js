@@ -14,9 +14,27 @@ function App() {
 
   const updateShelf = (book, shelf) => {
     const updateShelfAPI = async () => {
-      BooksAPI.update(book, shelf);
-      const res = await BooksAPI.getAll();
-      setBooks(res);
+      BooksAPI.update(book, shelf).then((resp) => {
+        let response = resp;
+        let newBookList = [];
+        response.read.forEach((item) =>
+          newBookList.push({ id: item, newShelf: "read" })
+        );
+        response.currentlyReading.forEach((item) =>
+          newBookList.push({ id: item, newShelf: "currentlyReading" })
+        );
+        response.wantToRead.forEach((item) =>
+          newBookList.push({ id: item, newShelf: "wantToRead" })
+        );
+        let newBooks = [];
+
+        books.forEach((item) => {
+          const item2 = newBookList.find((i2) => i2.id === item.id);
+          item.shelf = item2.newShelf;
+          newBooks.push(item);
+        });
+        setBooks(newBooks);
+      });
     };
     updateShelfAPI();
   };
